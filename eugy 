@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAZAMAEARN 💰 - Tazama & Pata Pesa</title>
+  <style>
+    /* CSS KAMA ULIVYOPOA */
+    :root {
+      --bg: #050505;
+      --card: #121212;
+      --gold: #d4af37;
+      --accent: #ffcc00;
+      --text: #f5f5f5;
+      --muted: #aaa;
+      --error: #ff4444;
+      --blue: #1e90ff;
+      --green: #00ff7f;
+      --red: #ff5555;
+      --purple: #a020f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      /* Fikiri kuhusu kuongeza 'Poppins' font hapa kama inapatikana */
+      font-family: 'Poppins', sans-serif; 
+    }
+
+    body {
+      background: linear-gradient(135deg, #050505 0%, #1a1a1a 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: moveBackground 20s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveBackground {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    .container {
+      width: 95%;
+      max-width: 420px;
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3), 0 0 60px rgba(255, 204, 0, 0.1);
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      background: linear-gradient(90deg, var(--gold), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: #1a1a1a;
+      color: var(--text);
+      font-size: 15px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+      transform: translateY(-2px);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(90deg, var(--gold), var(--accent));
+      color: #000;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(212, 175, 55, 0.6);
+    }
+
+    button:active {
+      transform: translateY(-1px);
+    }
+
+    .link {
+      text-align: center;
+      color: var(--gold);
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .link:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, var(--gold), var(--accent));
+      color: #000;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-weight: 600;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.5);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        bottom: -50px;
+        opacity: 0;
+      }
+      to {
+        bottom: 20px;
+        opacity: 1;
+      }
+    }
+
+    /* DASHBOARD */
+    .dashboard {
+      width: 100%;
+      min-height: 100vh;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      color: var(--text);
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      width: 100%;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border-bottom: 2px solid var(--gold);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .topbar h3 {
+      background: linear-gradient(90deg, var(--gold), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 22px;
+    }
+
+    .menu-dots {
+      cursor: pointer;
+      font-size: 28px;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-dots:hover {
+      transform: rotate(90deg);
+    }
+
+    .menu-box {
+      position: absolute;
+      top: 70px;
+      right: 15px;
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border: 2px solid var(--gold);
+      border-radius: 15px;
+      overflow: hidden;
+      display: none;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+      z-index: 100;
+    }
+
+    .menu-box button {
+      background: none;
+      color: var(--text);
+      border: none;
+      width: 100%;
+      padding: 12px 20px;
+      text-align: left;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #222;
+    }
+
+    .menu-box button:last-child {
+      border-bottom: none;
+    }
+
+    .menu-box button:hover {
+      background: linear-gradient(90deg, var(--gold), var(--accent));
+      color: #000;
+      padding-left: 25px;
+    }
+
+    .balance-card {
+      margin: 25px auto;
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border: 2px solid var(--gold);
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .balance-card h3 {
+      font-size: 24px;
+      background: linear-gradient(90deg, var(--gold), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .videos-section,
+    .withdraw-section {
+      width: 90%;
+      margin: 20px auto;
+      max-width: 400px;
+    }
+
+    .video-item {
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      padding: 15px;
+      margin-bottom: 20px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(255, 204, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .video-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.4);
+    }
+
+    .withdraw-section input {
+      text-align: center;
+    }
+
+    .withdraw-section button {
+      margin-top: 10px;
+    }
+
+    .withdraw-section h4 {
+      color: var(--gold);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .profile {
+      text-align: center;
+      padding: 30px;
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border-radius: 25px;
+      margin: 20px;
+      box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
+      border: 2px solid var(--gold);
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile h2 {
+      margin-bottom: 25px;
+    }
+
+    .profile p {
+      margin: 12px 0;
+      font-size: 16px;
+      color: var(--text);
+    }
+
+    /* Payment Instructions Modal */
+    .payment-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .payment-content {
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border: 2px solid var(--gold);
+      border-radius: 25px;
+      padding: 25px;
+      max-width: 500px;
+      width: 95%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 50px rgba(212, 175, 55, 0.5);
+      animation: modalSlideIn 0.4s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .payment-content h3 {
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .payment-content p {
+      color: var(--text);
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+
+    .payment-section {
+      background: #0d0d0d;
+      border: 1px solid var(--gold);
+      border-radius: 15px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+
+    .payment-section h4 {
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .payment-section ol {
+      margin-left: 20px;
+      color: var(--text);
+    }
+
+    .payment-section li {
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    .highlight {
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    .close-modal {
+      background: var(--red);
+      color: white;
+      margin-top: 20px;
+    }
+
+    .whatsapp-btn {
+      background: linear-gradient(90deg, #25D366, #128C7E);
+      color: white;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 16px;
+    }
+
+    .whatsapp-btn:hover {
+      box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6);
+    }
+
+    .info-text {
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 4px solid var(--gold);
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Scrollbar styling */
+    .payment-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .payment-content::-webkit-scrollbar-track {
+      background: #0d0d0d;
+      border-radius: 10px;
+    }
+
+    .payment-content::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 10px;
+    }
+
+    .payment-content::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="joinPage">
+    <h2>✨ Jiunge na TAZAMAEARN 💰</h2>
+    <input type="text" id="fullname" placeholder="Jina Kamili">
+    <input type="text" id="phone" placeholder="Namba ya Simu">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="register()">🚀 Jiunge Sasa</button>
+    <div class="link" onclick="showLogin()">Tayari una akaunti? Ingia</div>
+  </div>
+
+  <div class="container hidden" id="loginPage">
+    <h2>🔑 Ingia TAZAMAEARN 💰</h2>
+    <input type="text" id="loginUser" placeholder="Username">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="login()">✅ Ingia</button>
+    <div class="link" onclick="showJoin()">Huna akaunti? Jiunge</div>
+  </div>
+
+  <div class="container hidden" id="activatePage">
+    <h2>🔓 Activate Account</h2>
+    <div class="info-text">
+      Lipia Tsh 6,000 kwanza kisha pata Activation Code.
+    </div>
+    <button class="whatsapp-btn" onclick="showPaymentInstructions()">
+      📝 Maelekezo ya Malipo
+    </button>
+    <button class="whatsapp-btn" onclick="window.open('https://wa.me/255747629355','_blank')">
+      📞 Wasiliana WhatsApp
+    </button>
+    <input type="text" id="actCode" placeholder="Weka Activation Code">
+    <button onclick="activateAccount()">🔑 Weka Code</button>
+  </div>
+
+  <div class="payment-modal" id="paymentModal">
+    <div class="payment-content">
+      <h3>🟡 JINSI YA KULIPIA TAZAMAEARN</h3>
+      <p style="text-align: center; color: var(--gold); font-weight: bold;">
+        Lipia Activation yako kwa Tsh 6,000 tu!
+      </p>
+      <div class="info-text">
+        📱 Lipa Namba: <span class="highlight">134028452</span><br>
+        👤 Jina: <span class="highlight">Huruma Simsokwe</span>
+      </div>
+
+      <div class="payment-section">
+        <h4>🔴 VODACOM (M-Pesa)</h4>
+        <ol>
+          <li>Piga <span class="highlight">*150*00#</span></li>
+          <li>Chagua <span class="highlight">4. Lipa kwa M-Pesa</span></li>
+          <li>Chagua <span class="highlight">5. Weka namba ya kampuni/biashara</span></li>
+          <li>Ingiza Lipa Namba: <span class="highlight">134028452</span></li>
+          <li>Weka Kiasi: <span class="highlight">6000</span></li>
+          <li>Kumbukumbu: <span class="highlight">Jina lako / TAZAMA</span></li>
+          <li>Thibitisha jina: <span class="highlight">Huruma Simsokwe</span></li>
+          <li>Weka PIN → Malipo yamekamilika ✅</li>
+        </ol>
+      </div>
+
+      <div class="payment-section">
+        <h4>🟠 TIGO (Tigo Pesa)</h4>
+        <ol>
+          <li>Piga <span class="highlight">*150*01#</span></li>
+          <li>Chagua <span class="highlight">4. Lipa kwa Simu</span></li>
+          <li>Chagua <span class="highlight">3. Lipa kwa Namba ya Biashara</span></li>
+          <li>Ingiza Namba ya Biashara: <span class="highlight">134028452</span></li>
+          <li>Kiasi: <span class="highlight">6000</span></li>
+          <li>Kumbukumbu: <span class="highlight">Jina lako / TAZAMA</span></li>
+          <li>Thibitisha jina: <span class="highlight">Huruma Simsokwe</span></li>
+          <li>Malipo yamekamilika ✅</li>
+        </ol>
+      </div>
+
+      <div class="payment-section">
+        <h4>🟨 AIRTEL (Airtel Money)</h4>
+        <ol>
+          <li>Piga <span class="highlight">*150*60#</span></li>
+          <li>Chagua <span class="highlight">5. Lipa Bili</span></li>
+          <li>Chagua <span class="highlight">4. Lipa kwa namba ya biashara</span></li>
+          <li>Ingiza Lipa Namba: <span class="highlight">134028452</span></li>
+          <li>Kiasi: <span class="highlight">6000</span></li>
+          <li>Kumbukumbu: <span class="highlight">Jina lako / TAZAMA</span></li>
+          <li>Thibitisha jina: <span class="highlight">Huruma Simsokwe</span></li>
+          <li>Malipo yamekamilika ✅</li>
+        </ol>
+      </div>
+
+      <div class="payment-section">
+        <h4>🟩 HALOTEL (HaloPesa)</h4>
+        <ol>
+          <li>Piga <span class="highlight">*150*88#</span></li>
+          <li>Chagua <span class="highlight">4. Malipo</span></li>
+          <li>Chagua <span class="highlight">4. Namba ya Biashara/Malipo ya Serikali</span></li>
+          <li>Ingiza Lipa Namba: <span class="highlight">134028452</span></li>
+          <li>Kiasi: <span class="highlight">6000</span></li>
+          <li>Kumbukumbu: <span class="highlight">Jina lako / TAZAMA</span></li>
+          <li>Thibitisha jina: <span class="highlight">Huruma Simsokwe</span></li>
+          <li>Malipo yamekamilika ✅</li>
+        </ol>
+      </div>
+
+      <div class="info-text">
+        ✅ Baada ya malipo, utapokea Activation Code ya kuingia kwenye akaunti yako ya TazamaEarn.
+      </div>
+
+      <button class="whatsapp-btn" onclick="window.open('https://wa.me/255747629355','_blank')">
+        💬 Wasilisha Malipo WhatsApp
+      </button>
+      <button class="close-modal" onclick="closePaymentModal()">✖️ Funga</button>
+    </div>
+  </div>
+
+  <div class="dashboard" id="dashboard">
+    <div class="topbar">
+      <h3 id="hiUser">Hi User</h3>
+      <div class="menu-dots" onclick="toggleMenu()">⚙️</div>
+      <div class="menu-box" id="menuBox">
+        <button onclick="showProfile()">👤 Profile</button>
+        <button onclick="window.open('https://chat.whatsapp.com/Kk4RA7r5j9CDGmKBi5qSwq?mode=wwc','_blank')">👥 Kikundi</button>
+        <button onclick="alertBox('💲 Mkopo Coming Soon!')">💳 Mkopo</button>
+        <button onclick="logout()">🚪 Logout</button>
+      </div>
+    </div>
+    <div class="balance-card">
+      <h3>💰 Balance: <span id="balance">0</span> TZS</h3>
+    </div>
+    <div class="videos-section" id="videos"></div>
+    <div class="withdraw-section">
+      <h4>💸 Toa Pesa (Min 5,000, Max 25,000)</h4>
+      <input type="number" id="amount" placeholder="Kiasi cha kutoa">
+      <button onclick="withdraw()">📤 Toa Pesa</button>
+    </div>
+  </div>
+
+  <div class="profile hidden" id="profilePage">
+    <h2>👤 Profile Yangu</h2>
+    <p id="proName"></p>
+    <p id="proPhone"></p>
+    <p id="proUser"></p>
+    <button onclick="backDashboard()">🔙 Rudi Dashboard</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // JavaScript KAMA ULIVYOPOA
+    const codes = ["12315", "15143", "61649", "34127", "78391", "20486", "95371", "38764", "64025", "81943", "17436", "29873", "54692", "73518", "86702", "91034", "15279", "62385", "43960", "80421", "37526", "98214", "41693", "27058", "69814", "35971", "18427", "90763", "26534", "83217", "74196", "19082", "53648", "88206", "41792", "67105", "90815", "26097", "84371", "79215", "35480", "68821", "51493", "10327", "92641", "38059", "24817", "69035", "72590", "31948"];
+    const videosList = ["https://www.youtube.com/embed/tMhGBtEhNS0", "https://www.youtube.com/embed/jpibqnDFGjE", "https://www.youtube.com/embed/1F1IdaFXj_k", "https://www.youtube.com/embed/__fRPPggOos", "https://www.youtube.com/embed/c7LZGQpCaiI", "https://www.youtube.com/embed/4CaL6CCMiXQ", "https://www.youtube.com/embed/olyCiL0IZtk"];
+
+    const toast = msg => {
+      let t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    function showLogin() {
+      document.getElementById('joinPage').classList.add('hidden');
+      document.getElementById('loginPage').classList.remove('hidden');
+    }
+
+    function showJoin() {
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('joinPage').classList.remove('hidden');
+    }
+
+    function register() {
+      const fullname = document.getElementById('fullname'), phone = document.getElementById('phone'), username = document.getElementById('username'), password = document.getElementById('password');
+      const full = fullname.value.trim(), ph = phone.value.trim(), user = username.value.trim(), pass = password.value.trim();
+      if (!full || !ph || !user || !pass) return toast('❌ Jaza taarifa zote!');
+      localStorage.setItem('user', JSON.stringify({ full, ph, user, pass, balance: 0, active: false, lastWatch: 0 }));
+      document.getElementById('joinPage').classList.add('hidden');
+      document.getElementById('activatePage').classList.remove('hidden');
+      toast('✅ Akaunti imeundwa! Sasa lipia kuactivate.');
+    }
+
+    function login() {
+      const loginUser = document.getElementById('loginUser'), loginPass = document.getElementById('loginPass');
+      const user = loginUser.value.trim(), pass = loginPass.value.trim();
+      const data = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!data.user) return toast('❌ Hakuna akaunti hii!');
+      if (data.user === user && data.pass === pass) {
+        if (!data.active) {
+          document.getElementById('loginPage').classList.add('hidden');
+          document.getElementById('activatePage').classList.remove('hidden');
+        } else openDashboard(data);
+      } else toast('❌ Taarifa sio sahihi!');
+    }
+
+    function activateAccount() {
+      const actCode = document.getElementById('actCode');
+      const code = actCode.value.trim();
+      if (codes.includes(code)) {
+        let data = JSON.parse(localStorage.getItem('user'));
+        data.active = true;
+        localStorage.setItem('user', JSON.stringify(data));
+        
+        // Ondoa code iliyotumika
+        const index = codes.indexOf(code);
+        if (index > -1) {
+            codes.splice(index, 1);
+        }
+        
+        toast('🎉 Account imewezeshwa kikamilifu!');
+        openDashboard(data);
+      } else toast('❌ Code sio sahihi au imetumika!');
+    }
+
+    function openDashboard(data) {
+      document.getElementById('activatePage').classList.add('hidden');
+      document.getElementById('loginPage').classList.add('hidden'); // Hakikisha login page pia imefichwa
+      document.getElementById('joinPage').classList.add('hidden'); // Hakikisha join page pia imefichwa
+      document.getElementById('dashboard').style.display = 'flex';
+      document.getElementById('hiUser').innerText = '👋 Hi ' + data.user;
+      document.getElementById('balance').innerText = data.balance.toLocaleString();
+      loadVideos();
+    }
+
+    function loadVideos() {
+      const vidCont = document.getElementById('videos');
+      vidCont.innerHTML = '';
+      let u = JSON.parse(localStorage.getItem('user'));
+      const now = Date.now();
+      const diff = now - (u.lastWatch || 0);
+      const dayMs = 24 * 60 * 60 * 1000;
+      
+      // Hii inaruhusu kutazama videos tena baada ya masaa 24 kama huna videos za kutazama
+      if (u.videosWatched && u.videosWatched.length === videosList.length && diff < dayMs) {
+          return toast('🕒 Utatazama tena baada ya masaa 24');
+      }
+
+      u.videosWatched = u.videosWatched || []; // Unda array kama haipo
+      
+      videosList.forEach((link, i) => {
+        // Angalia kama video tayari imetazamwa
+        if (u.videosWatched.includes(i)) return; 
+
+        const div = document.createElement('div');
+        div.className = 'video-item';
+        div.innerHTML = `
+          <p style="color: var(--gold); font-weight: bold;">📺 Video ${i + 1}</p>
+          <iframe width="100%" height="200" src="${link}" frameborder="0" allowfullscreen style="border-radius: 10px; margin: 10px 0;"></iframe>
+          <button id="watchBtn${i}">▶️ Tazama</button>
+          <p id="countdown${i}" style="color:var(--gold);font-weight:bold;display:none;"></p>
+        `;
+        vidCont.appendChild(div);
+        
+        const btn = document.getElementById(`watchBtn${i}`);
+        const cdEl = document.getElementById(`countdown${i}`);
+        
+        btn.onclick = function () {
+          btn.disabled = true;
+          btn.style.opacity = '0.5';
+          cdEl.style.display = 'block';
+          
+          let seconds = 30;
+          cdEl.innerText = `⏳ ${seconds}s`; // Weka thamani ya kwanza
+
+          const interval = setInterval(() => {
+            seconds--;
+            cdEl.innerText = `⏳ ${seconds}s`;
+
+            if (seconds <= 0) {
+              clearInterval(interval);
+              div.remove();
+
+              // Sasisha data ya mtumiaji
+              let updatedUser = JSON.parse(localStorage.getItem('user'));
+              updatedUser.balance += 500;
+              updatedUser.videosWatched = updatedUser.videosWatched || [];
+              updatedUser.videosWatched.push(i); 
+
+              // Ikiwa zote zimetazamwa
+              if (updatedUser.videosWatched.length === videosList.length) {
+                updatedUser.lastWatch = Date.now();
+                updatedUser.videosWatched = []; // Zifute ili zionekane tena baada ya masaa 24
+                toast('🎉 Hongera! Subiri masaa 24 kwa video mpya');
+              }
+
+              localStorage.setItem('user', JSON.stringify(updatedUser));
+              document.getElementById('balance').innerText = updatedUser.balance.toLocaleString();
+              toast('💰 +500 TZS imewekwa kwenye akaunti!');
+            }
+          }, 1000);
+        };
+      });
+      
+      // Ikiwa hakuna video zilizopakiwa (zote zimetazamwa)
+      if (vidCont.children.length === 0) {
+        if (diff < dayMs) {
+             vidCont.innerHTML = `<div class="info-text">Unahitaji kusubiri masaa ${Math.ceil((dayMs - diff) / (60 * 60 * 1000))} kwa video mpya.</div>`;
+        } else {
+             // Hii itatokea kama time imepita lakini bado inarudi hapa (logic error somewhere - but good fail-safe)
+             vidCont.innerHTML = `<div class="info-text">Hakuna video za leo. Jaribu kuburudisha (refresh) ukurasa.</div>`;
+        }
+      }
+    }
+
+    function withdraw() {
+      const amountInput = document.getElementById('amount');
+      const amt = parseInt(amountInput.value);
+      if (!amt || isNaN(amt)) return toast('❌ Weka kiasi!');
+      if (amt < 5000) return toast('❌ Withdrawal min ni 5,000 TZS!');
+      if (amt > 25000) return toast('❌ Kiwango cha juu ni 25,000 TZS!');
+      
+      let u = JSON.parse(localStorage.getItem('user'));
+      if (amt > u.balance) return toast('❌ Balance haitoshi!');
+      
+      u.balance -= amt;
+      localStorage.setItem('user', JSON.stringify(u));
+      document.getElementById('balance').innerText = u.balance.toLocaleString();
+      amountInput.value = ''; // Futa kiasi
+      toast('✅ Umetoa TZS ' + amt.toLocaleString());
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('menuBox');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function showProfile() {
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('profilePage').classList.remove('hidden');
+      toggleMenu(); // Funga menu
+      const u = JSON.parse(localStorage.getItem('user'));
+      document.getElementById('proName').innerText = '📝 Jina: ' + u.full;
+      document.getElementById('proPhone').innerText = '📱 Simu: ' + u.ph;
+      document.getElementById('proUser').innerText = '👤 Username: ' + u.user;
+    }
+
+    function backDashboard() {
+      document.getElementById('profilePage').classList.add('hidden');
+      document.getElementById('dashboard').style.display = 'flex';
+    }
+
+    function logout() {
+      if (confirm('Je, una uhakika unataka kutoka?')) {
+        localStorage.removeItem('user');
+        // Safisha local storage ya codes zilizotumika kwa test
+        // Hii inapaswa kufanyika kwenye server kwa mfumo halisi.
+        // Kwa sasa tunatumia array ya codes iliyoko kwenye script.
+        location.reload();
+      }
+    }
+
+    function alertBox(msg) {
+      toast(msg);
+    }
+
+    function showPaymentInstructions() {
+      document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('paymentModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closePaymentModal();
+      }
+    });
+
+    // Anzisha Dashboard au Login/Join kulingana na status ya mtumiaji
+    (function checkLoginStatus() {
+        const data = JSON.parse(localStorage.getItem('user') || '{}');
+        if (data.user) {
+            if (data.active) {
+                openDashboard(data);
+            } else {
+                document.getElementById('joinPage').classList.add('hidden');
+                document.getElementById('activatePage').classList.remove('hidden');
+            }
+        }
+    })();
+  </script>
+</body>
+</html>
